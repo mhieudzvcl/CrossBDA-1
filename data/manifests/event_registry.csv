@@ -1,0 +1,33 @@
+event_id,canonical_name,source,hazard,country,event_date,allowed_train,external_target,notes
+xbd_guatemala_volcano,guatemala-volcano,xbd,volcano,Guatemala,,1,0,Observed in xBD train inventory
+xbd_hurricane_florence,hurricane-florence,xbd,hurricane,USA,,1,0,Observed in xBD train inventory
+xbd_hurricane_harvey,hurricane-harvey,xbd,hurricane,USA,,1,0,Observed in xBD train inventory
+xbd_hurricane_matthew,hurricane-matthew,xbd,hurricane,USA,,1,0,Observed in xBD train inventory
+xbd_hurricane_michael,hurricane-michael,xbd,hurricane,USA,,1,0,Observed in xBD train inventory
+xbd_mexico_earthquake,mexico-earthquake,xbd,earthquake,Mexico,,1,0,Observed in xBD train inventory
+xbd_midwest_flooding,midwest-flooding,xbd,flood,USA,,1,0,Observed in xBD train inventory
+xbd_palu_tsunami,palu-tsunami,xbd,tsunami,Indonesia,,1,0,Observed in xBD train inventory
+xbd_santa_rosa_wildfire,santa-rosa-wildfire,xbd,wildfire,USA,,1,0,Observed in xBD train inventory
+xbd_socal_fire,socal-fire,xbd,wildfire,USA,,1,0,Observed in xBD train inventory
+xbd_joplin_tornado,joplin-tornado,xbd,tornado,USA,,1,0,Observed in xBD Tier3 inventory
+xbd_lower_puna_volcano,lower-puna-volcano,xbd,volcano,USA,,1,0,Observed in xBD Tier3 inventory
+xbd_moore_tornado,moore-tornado,xbd,tornado,USA,,1,0,Observed in xBD Tier3 inventory
+xbd_nepal_flooding,nepal-flooding,xbd,flood,Nepal,,1,0,Observed in xBD Tier3 inventory
+xbd_pinery_bushfire,pinery-bushfire,xbd,wildfire,Australia,,1,0,Observed in xBD Tier3 inventory
+xbd_portugal_wildfire,portugal-wildfire,xbd,wildfire,Portugal,,1,0,Observed in xBD Tier3 inventory
+xbd_sunda_tsunami,sunda-tsunami,xbd,tsunami,Indonesia,,1,0,Observed in xBD Tier3 inventory
+xbd_tuscaloosa_tornado,tuscaloosa-tornado,xbd,tornado,USA,,1,0,Observed in xBD Tier3 inventory
+xbd_woolsey_fire,woolsey-fire,xbd,wildfire,USA,,1,0,Observed in xBD Tier3 inventory
+ebd_hurricane_irma,hurricane-irma,ebd,hurricane,USA,,1,0,
+ebd_hurricane_dorian,hurricane-dorian,ebd,hurricane,USA,,1,0,
+ebd_hurricane_laura,hurricane-laura,ebd,hurricane,USA,,1,0,
+ebd_hurricane_delta,hurricane-delta,ebd,hurricane,USA,,1,0,
+ebd_hurricane_ida,hurricane-ida,ebd,hurricane,USA,2021-08-29,0,0,Excluded when ida-BD is the external target
+ebd_hurricane_ian,hurricane-ian,ebd,hurricane,USA,,1,0,
+ebd_texas_tornadoes,texas-tornadoes,ebd,tornado,USA,,1,0,
+ebd_pakistan_flooding,pakistan-flooding,ebd,flood,Pakistan,,1,0,
+ebd_earthquake_turkey,turkiye-earthquake,ebd,earthquake,Türkiye,,1,0,Source folder EARTHQUAKE-TURKEY
+ebd_mount_semeru_eruption,mount-semeru,ebd,volcano,Indonesia,,1,0,Source folder MOUNT-SEMERU-ERUPTION
+ebd_stvincent_volcano,st-vincent-volcano,ebd,volcano,Saint Vincent and the Grenadines,,1,0,Source folder STVINCENT-VOLCANO
+ebd_tonga_volcano,tonga-volcano,ebd,volcano,Tonga,,1,0,
+idabd_hurricane_ida,hurricane-ida,idabd,hurricane,USA,2021-08-29,0,1,External zero-shot target; must share canonical_name with EBD Ida

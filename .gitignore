@@ -1,0 +1,28 @@
+# Raw source data and generated artifacts
+/data/raw/
+/data/processed/
+/data/reports/
+/outputs/
+/weights/
+*.ckpt
+*.pth
+*.pt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.envs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

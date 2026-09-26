@@ -1,0 +1,42 @@
+version: 1
+unit: canonical_disaster_event
+description: >-
+  Event-held-out benchmark draft. Hurricane Ian is validation; Pakistan flooding
+  and the linked Socal/Woolsey fire events are test. All other eligible events
+  are train. EBD Hurricane Ida is excluded for zero-shot ida-BD evaluation.
+assignments:
+  train:
+    - guatemala-volcano
+    - hurricane-florence
+    - hurricane-harvey
+    - hurricane-matthew
+    - hurricane-michael
+    - mexico-earthquake
+    - midwest-flooding
+    - palu-tsunami
+    - santa-rosa-wildfire
+    - joplin-tornado
+    - lower-puna-volcano
+    - moore-tornado
+    - nepal-flooding
+    - pinery-bushfire
+    - portugal-wildfire
+    - sunda-tsunami
+    - tuscaloosa-tornado
+    - hurricane-irma
+    - hurricane-dorian
+    - hurricane-laura
+    - hurricane-delta
+    - texas-tornadoes
+    - turkiye-earthquake
+    - mount-semeru
+    - st-vincent-volcano
+    - tonga-volcano
+  validation:
+    - hurricane-ian
+  test:
+    - pakistan-flooding
+    - socal-fire
+    - woolsey-fire
+  excluded:
+    - hurricane-ida

@@ -1,0 +1,27 @@
+version: 1
+input:
+  size: 512
+  channels: 3
+labels:
+  localization_values: [0, 1]
+  damage_values: [0, 1, 2, 3, 4]
+  ignore_value: 255
+sources:
+  root: G:/My Drive/KhoaLuan_Data/data
+  xbd_train: G:/My Drive/KhoaLuan_Data/data/xBD/train
+  xbd_tier3: G:/My Drive/KhoaLuan_Data/data/xBD/Tier3/tier3/tier3
+  ebd: G:/My Drive/KhoaLuan_Data/data/EBD
+  idabd: G:/My Drive/KhoaLuan_Data/data/ida-BD
+  xbd_s12: G:/My Drive/KhoaLuan_Data/data/xBD-S12
+manifests:
+  event_registry: data/manifests/event_registry.csv
+  parent_samples: data/manifests/parent_samples.csv
+  split_samples: data/manifests/splits_v1.csv
+  all_samples: data/manifests/all_samples.parquet
+policy:
+  exclude_events_from_training:
+    - hurricane-ida
+  xbd_crop_size: 512
+  xbd_crop_overlap: 0
+  minimum_building_pixel_ratio: 0.005
+  empty_patch_keep_fraction: 0.15

@@ -77,13 +77,28 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(stream))
 
 
+def write_checkpoint(path: Path, hashes: dict[str, int], errors: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps({"hashes_by_path": hashes, "read_errors": errors}, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, default=Path("data/manifests/splits_v1.csv"))
     parser.add_argument("--exact-links", type=Path, default=Path("data/manifests/cross_event_duplicate_links.csv"))
     parser.add_argument("--out", type=Path, default=Path("data/reports/xbd_near_duplicates_candidates.json"))
+    parser.add_argument(
+        "--checkpoint", type=Path,
+        default=Path("data/reports/xbd_near_duplicates_fingerprints.json"),
+        help="resumable dHash cache; removed after a successful candidate report",
+    )
     parser.add_argument("--radius", type=int, default=4, help="maximum Hamming distance across 64 dHash bits")
-    parser.add_argument("--workers", type=int, default=32)
+    parser.add_argument("--workers", type=int, default=64)
     args = parser.parse_args()
 
     rows = read_rows(args.manifest)
@@ -103,19 +118,45 @@ def main() -> int:
             })
 
     errors: list[str] = []
+    saved_hashes: dict[str, int] = {}
+    if args.checkpoint.is_file():
+        try:
+            checkpoint = json.loads(args.checkpoint.read_text(encoding="utf-8"))
+            saved_hashes = {
+                str(path): int(value)
+                for path, value in checkpoint.get("hashes_by_path", {}).items()
+            }
+            errors = [str(error) for error in checkpoint.get("read_errors", [])]
+        except (OSError, ValueError, json.JSONDecodeError):
+            saved_hashes = {}
+            errors = []
+    valid_paths = {str(record["path"]) for record in records}
+    saved_hashes = {path: value for path, value in saved_hashes.items() if path in valid_paths}
     fingerprints: dict[int, list[dict[str, Any]]] = {}
+    for record in records:
+        value = saved_hashes.get(str(record["path"]))
+        if value is not None:
+            record["dhash"] = value
+            fingerprints.setdefault(value, []).append(record)
+    pending_records = [record for record in records if str(record["path"]) not in saved_hashes]
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
-        futures = {pool.submit(dhash, Path(record["path"])): record for record in records}
+        futures = {pool.submit(dhash, Path(record["path"])): record for record in pending_records}
         for index, future in enumerate(as_completed(futures), start=1):
             record = futures[future]
             try:
                 value = future.result()
                 record["dhash"] = value
                 fingerprints.setdefault(value, []).append(record)
+                saved_hashes[str(record["path"])] = value
+                error_prefix = f"{record['path']}:"
+                errors = [message for message in errors if not message.startswith(error_prefix)]
             except (OSError, ValueError) as error:
                 errors.append(f"{record['path']}: {error}")
             if index % 1000 == 0:
-                print(f"Fingerprinted {index}/{len(records)} xBD images", flush=True)
+                write_checkpoint(args.checkpoint, saved_hashes, errors)
+                print(f"Fingerprinted {len(saved_hashes)}/{len(records)} xBD images", flush=True)
+        if pending_records:
+            write_checkpoint(args.checkpoint, saved_hashes, errors)
 
     tier3_tree = BKTree()
     for value, grouped in fingerprints.items():
@@ -168,6 +209,8 @@ def main() -> int:
     temporary = args.out.with_suffix(args.out.suffix + ".tmp")
     temporary.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     temporary.replace(args.out)
+    if not errors:
+        args.checkpoint.unlink(missing_ok=True)
     print(f"Wrote {len(candidates)} near-duplicate candidates; read errors={len(errors)}; report={args.out}")
     return 1 if errors else 0
 

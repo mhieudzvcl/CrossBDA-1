@@ -23,7 +23,7 @@
 - [x] Implement xBD polygon rasterization, paired 512 crops, and EBD mask normalization.
 - [x] Run small xBD and EBD preprocessing pilots.
 - [x] Implement deterministic event-stratified preview generation and per-class pixel counting.
-- [ ] Process the full eligible manifest and inspect the generated previews/class statistics (paused by user; last logged checkpoint 1,792/24,745 parents, zero errors. Partial files are present under `data/processed/512`; no final `chips.csv` or report was written.)
+- [x] Process the full eligible manifest and inspect the generated previews/class statistics (24,745 parents; 52,249 chips; zero errors. Reused 13,880 prior parents. 90 previews across 30 split/source/event groups were generated and visually checked.)
 
 ## M3 - Leak-free splits
 
@@ -32,10 +32,14 @@
 - [x] Keep linked `socal-fire`/`woolsey-fire` samples together in test.
 - [x] Keep EBD Hurricane Ida out of active splits for ida-BD evaluation.
 - [x] Implement a cross-subset dHash near-duplicate candidate scanner.
-- [ ] Run and manually review near-duplicate candidates; check exact source-file reuse beyond the known links (paused by user after 12,000/18,336 fingerprints; interrupted scan did not write a candidate report; manual review pending.)
+- [x] Fingerprint all 18,336 xBD train/Tier3 images with dHash; zero read errors.
+- [x] Manually inspect all 46 unique candidate file pairs crossing train/test (among 1,007 candidate pairs); no same-scene pairs were confirmed.
+- [x] SHA-256 check the 46 cross-split candidate pairs; zero byte-identical pairs beyond the 426 known exact links. Keep the current split assignments.
 
 ## M4-M6 - Baseline, proposed fusion, and external evaluation
 
-- Train and lock the Scale-MAE/FPN concatenation baseline before BG-MTDF ablations.
+- [x] Add model/training/evaluation code, complete the GSD-aware training manifest, and stage the Scale-MAE ViT-Large checkpoint locally.
+- [x] Run the inference-only B1 preflight on the local GPU; verify checkpoint loading and 512 x 512 outputs. Training has not started.
+- [ ] Train and lock the Scale-MAE/FPN concatenation baseline before BG-MTDF ablations.
 - Evaluate on a held-out event, then run fixed zero-shot ida-BD evaluation if source exclusion is clean.
 - Consider additional modalities or Myanmar only after these milestones.

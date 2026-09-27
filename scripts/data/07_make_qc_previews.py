@@ -77,7 +77,7 @@ def main() -> int:
             canvas.paste(panel, (x, y))
             draw.rectangle((x, y, x + 240, y + 20), fill=(0, 0, 0))
             draw.text((x + 5, y + 3), title, fill=(255, 255, 255))
-        output = args.out / f"{split}_{source}_{event_id}_{row['chip_id']}.jpg"
+        output = args.out / f"{row['split']}_{row['source']}_{row['event_id']}_{row['chip_id']}.jpg"
         canvas.save(output, quality=92)
 
     summary = {

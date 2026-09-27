@@ -1,0 +1,79 @@
+version: 1
+experiment: b1_scalemae_siamese_concat_fpn
+seed: 42
+
+data:
+  manifest: data/processed/512/training_manifest.csv
+  image_size: 512
+  image_value_range: [0, 255]
+  normalization: imagenet
+  localization_target: post_localization_mask
+  damage_target: post_damage_mask
+  damage_classes: 5 # background, no-damage, minor, major, destroyed
+  ignore_index: 255
+  class_weights: data/processed/512/damage_class_weights.json
+  ebd_nominal_gsd_m: 0.4 # approximation: midpoint of the published 0.3-0.5 m range
+
+model:
+  backbone: scale_mae_vit_large_patch16
+  pretrained_checkpoint: weights/scalemae/vit_large_patch16_224_fmow_rgb_scalemae-98ed9821.pth
+  pretrained_repository: https://github.com/bair-climate-initiative/scale-mae
+  pretrained_weights_mirror: https://huggingface.co/isaaccorley/vit_large_patch16_224_fmow_rgb_scalemae
+  input_channels: 3
+  patch_size: 16
+  embed_dim: 1024
+  depth: 24
+  attention_heads: 16
+  feature_blocks: [5, 11, 17, 23]
+  siamese_shared_weights: true
+  fusion: concatenate_pre_post
+  fpn_channels: 256
+  localization_logits: 1
+  damage_logits: 5
+
+loss:
+  localization:
+    bce_weight: 0.5
+    dice_weight: 0.5
+  damage:
+    type: weighted_cross_entropy
+    weights_source: training_split_only
+    ignore_index: 255
+  task_weights: [0.5, 0.5]
+
+training:
+  device: cuda
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  amp: fp16
+  gradient_clip_norm: 1.0
+  optimizer: AdamW
+  head_learning_rate: 0.0001
+  backbone_learning_rate: 0.00001
+  weight_decay: 0.0001
+  num_workers: 4
+  sampler: event_class_balanced
+  sampler_rare_classes: [2, 3, 4]
+  sampler_rare_mass: 0.5
+  gradient_checkpointing: true
+  augmentations:
+    horizontal_flip: true
+    vertical_flip: true
+    rotations_degrees: [0, 90, 180, 270]
+    synchronized_pre_post_masks: true
+    random_resize: false
+  stages:
+    sanity_overfit_samples: 8
+    sanity_overfit_steps: 100
+    freeze_backbone_first: true
+    frozen_epochs: 3
+    partial_unfreeze_last_blocks: 6
+    partial_unfreeze_epochs: 20
+  checkpoint_selection: validation_xview2_score
+  validation_score:
+    localization_f1_weight: 0.3
+    damage_f1_weight: 0.7
+  test_event_used_for_selection: false
+
+output:
+  directory: outputs/experiments/b1_scalemae_siamese_concat_fpn

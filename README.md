@@ -57,7 +57,7 @@ python scripts/data/07_make_qc_previews.py
 
 ## Current milestone
 
-M1 is complete: 103,163 source rasters were fully decoded with zero corrupt files or scan errors; dimensions were applied to the parent manifest, the event-aware split manifest was rebuilt, and the typed Parquet export was written. Full 512px preprocessing and the xBD train/Tier3 near-duplicate scan are currently paused; status and partial outputs are recorded in [docs/ROADMAP.md](docs/ROADMAP.md). No final chip manifest or near-duplicate candidate report exists yet. Full preview/class-statistics review and model training remain incomplete. The source audit found cross-event duplicate pre-disaster images, so linked samples must remain together in future splits. See [docs/DATASET.md](docs/DATASET.md), [docs/ROADMAP.md](docs/ROADMAP.md), and [docs/DECISIONS.md](docs/DECISIONS.md).
+M1-M3 are complete: 103,163 source rasters passed full decode QC; 24,745 eligible parents were prepared into 52,249 chips with no errors; and 90 visual QA previews were checked. All 18,336 xBD train/Tier3 images were fingerprinted. The 46 unique cross-split near-duplicate candidates were visually reviewed and SHA-256 checked; none were confirmed as duplicate scenes/files, so the split stayed unchanged alongside the 426 known exact links. The B1 Scale-MAE/FPN model, training manifest, class weights, and inference-only preflight are ready; preflight passed on the local RTX 4060 GPU. Training and external evaluation have not started. See [docs/DATASET.md](docs/DATASET.md), [docs/ROADMAP.md](docs/ROADMAP.md), and [docs/DECISIONS.md](docs/DECISIONS.md).
 
 ## Data handling
 
